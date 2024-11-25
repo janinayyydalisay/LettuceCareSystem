@@ -1,0 +1,212 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predict - LettuceCare System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Lucida Fax';
+            background: url("{% static 'images/LettuceBG.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        body {
+            font-family: 'Lucida Fax';
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            background-color: #FFB84D;
+            text-transform: uppercase;
+            font-size: 2.5em;
+            letter-spacing: 1px;
+            margin-bottom: 25px;
+        }
+
+        .intro {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: left;
+            margin-bottom: 40px;
+            position: relative;
+            background-color: #fce808;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 1.5s ease forwards;
+        }
+
+        .intro::before {
+            content: "📌";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            font-size: 2em;
+        }
+
+        .intro h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #045207;
+        }
+
+        .intro p {
+            font-size: 1.2em;
+            color: #080700;
+            animation: fadeInUp 2s ease forwards;
+            opacity: 2;
+            transform: translateY(30px);
+            margin-left: 20px;
+        }
+
+        .intro img {
+            width: 100px; 
+            height: auto;
+            animation: waveAnimation 4s ease-in-out infinite;
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        label.file-label {
+            padding: 15px 30px;
+            background-color: #FFEB3B;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1em;
+            color: #333;
+            display: inline-block;
+            margin-bottom: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        label.file-label:hover {
+            background-color: #d1fa07;
+            color: #fc6508;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-name {
+            font-size: 1.1em;
+            color: #fc6508;
+            margin-bottom: 25px;
+        }
+
+        button {
+            background-color:#fc6508;
+            color: white;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.1em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #d1fa07;
+            transform: translateY(-4px);
+            color: black;
+        }
+
+        a.button {
+            margin: 10px;
+            padding: 14px 20px;
+            background-color: #fc6508;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+        }
+
+        a.button:hover {
+            background-color: #d1fa07;
+            color: black;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="search-bar">
+        <a href="{% url 'camera_predict' %}" class="button">Predict using Camera</a>
+        <a href="{% url 'history' %}" class="button">Prediction History</a>
+        <a href="{% url 'home' %}" class="button">Home</a>
+    </div>
+
+    <section class="intro">
+        <img src="{% static 'images/hello.gif' %}" />
+        <div>
+            <h2>Upload Lettuce Image for Prediction</h2>
+            <p>To predict the health of your lettuce, simply upload an image and click "Predict".</p>
+        </div>
+    </section>
+
+    <div class="form-container">
+        <form id="upload-form" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label class="file-label" for="file-upload">Choose a file</label>
+            <input type="file" id="file-upload" name="image" accept="image/*" required>
+            <div class="file-name" id="file-name">No file chosen</div>
+            <button type="submit">Predict</button>
+        </form>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('file-upload');
+        const fileNameDisplay = document.getElementById('file-name');
+
+        fileInput.addEventListener('change', function () {
+            const fileName = fileInput.files[0] ? fileInput.files[0].name : 'No file chosen';
+            fileNameDisplay.textContent = fileName;
+        });
+    </script>
+</body>
+</html>

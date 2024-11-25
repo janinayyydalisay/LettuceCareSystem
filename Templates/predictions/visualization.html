@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disease Probability Visualization</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: url("{% static 'images/LettuceBG2.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #084a01;
+            font-family: 'Lucida Fax';
+            margin-bottom: 20px;
+        }
+
+        .navigation {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .navigation a {
+            background-color: #084a01;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 5px;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .navigation a:hover {
+            background-color: #21f70a;
+            color: black;
+        }
+
+        .main-content {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .chart-container {
+            flex: 12;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        canvas {
+            max-width: 100%;
+        }
+
+        .controls {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .controls button {
+            background-color: #084a01;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .controls button:hover {
+            background-color: #21f70a;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <h1>Disease Probability Visualization</h1>
+
+    <div class="navigation">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'predict' %}">Predict</a>
+        <a href="{% url 'history' %}">View History</a>
+    </div>
+
+    <div class="main-content">
+        <div class="chart-container">
+            <canvas id="probabilityChart"></canvas>
+        </div>
+        <div class="controls">
+            <button onclick="downloadChart()">Download Chart as Image</button>
+        </div>
+    </div>
+
+    <script>
+        const data = JSON.parse('{{ history_json|escapejs }}');
+
+        const chartData = {
+            labels: data.months,
+            datasets: [
+                { label: 'Healthy (Dark Green)', data: data.healthy, borderColor: 'darkgreen', backgroundColor: 'rgba(0, 128, 0, 0.2)', borderWidth: 2, fill: true, tension: 0.4 },
+                { label: 'Bacterial (Dark Red)', data: data.bacterial, borderColor: 'darkred', backgroundColor: 'rgba(139, 0, 0, 0.2)', borderWidth: 2, fill: true, tension: 0.4 },
+                { label: 'Fungal (Dark Yellow)', data: data.fungal, borderColor: '#d4a017', backgroundColor: 'rgba(212, 160, 23, 0.2)', borderWidth: 2, fill: true, tension: 0.4 }
+            ]
+        };
+
+        const config = {
+            type: 'line',
+            data: chartData,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { labels: { font: { size: 14 } } },
+                    tooltip: { callbacks: { label: context => `${context.dataset.label}: ${context.raw.toFixed(2)}%` } }
+                },
+                scales: {
+                    x: { title: { display: true, text: 'Months', font: { size: 16 } } },
+                    y: { title: { display: true, text: 'Average Probability (%)', font: { size: 16 } }, min: 0, max: 100 }
+                }
+            }
+        };
+
+        const ctx = document.getElementById('probabilityChart').getContext('2d');
+        const probabilityChart = new Chart(ctx, config);
+
+        function toggleDataset(label) {
+            const dataset = probabilityChart.data.datasets.find(ds => ds.label.includes(label));
+            if (dataset) {
+                dataset.hidden = !dataset.hidden;
+                probabilityChart.update();
+            }
+        }
+
+        function downloadChart() {
+            const link = document.createElement('a');
+            link.href = probabilityChart.toBase64Image();
+            link.download = 'LettuceCare_ChartProbability.png';
+            link.click();
+        }
+    </script>
+</body>
+</html>

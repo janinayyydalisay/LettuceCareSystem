@@ -1,0 +1,328 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - LettuceCare System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden; 
+            font-family: 'Lucida Fax';
+            background: url("{% static 'images/LettuceBG1.jpg' %}") no-repeat center center fixed;
+            background-size: cover; 
+            color: white;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color:#fc6b03;
+            color:white;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        header .logo h1 {
+            margin: 0;
+            font-size: 3.5em;
+            font-family: forte;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative; /* Add relative position to allow absolute positioning of leaves */
+        }
+
+        .falling-leaf {
+            position: absolute;
+            font-size: 2em;
+            color: #4CAF50;
+            opacity: 0.9;
+            animation: fall 20s linear infinite;
+        }
+
+        .falling-leaf.left {
+            left: -10%;
+        }
+
+        .falling-leaf.right {
+            right: -10%;
+        }
+
+        .falling-leaf:nth-child(odd) {
+            animation-duration: 14s;
+            animation-delay: -1s;
+        }
+
+        .falling-leaf:nth-child(even) {
+            animation-duration: 16s;
+            animation-delay: -2s;
+        }
+
+        .falling-leaf.far-left {
+            left: -15%;
+            font-size: 2.5em;
+        }
+
+        .falling-leaf.far-right {
+            right: -15%;
+            font-size: 2.5em;
+        }
+
+        .falling-leaf.middle-left {
+            left: 10%;
+            font-size: 2em;
+        }
+
+        .falling-leaf.middle-right {
+            right: 10%;
+            font-size: 2em;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateX(0) rotate(0deg);
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        .intro {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: left;
+            margin-bottom: 40px;
+            position: relative;
+            background-color: #f7f707;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 1.5s ease forwards;
+        }
+
+        .intro::before {
+            content: "📌📌";
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            font-size: 2em;
+        }
+
+        .intro h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #045207;
+        }
+
+        .intro p {
+            font-size: 1.2em;
+            color: #080700;
+            animation: fadeInUp 2s ease forwards;
+            opacity: 4;
+            transform: translateY(30px);
+            margin-left: 20px;
+        }
+
+        .intro img {
+            width: 100px; 
+            height: auto;
+            animation: waveAnimation 4s ease-in-out infinite;
+        }
+
+        @keyframes waveAnimation {
+            0% {
+                transform: rotate(0deg);
+            }
+            50% {
+                transform: rotate(20deg);
+            }
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .features {
+            display: flex;
+            justify-content: space-around;
+            gap: 50px;
+            flex-wrap: wrap;
+        }
+
+        .feature-box {
+            background-color: #045207;
+            border-radius: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            text-align: center;
+            width: 30%;
+            min-width: 150px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-box:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+        }
+
+        .feature-box h3 {
+            color: #F5F5F5;
+            margin-bottom: 15px;
+            font-size: 1.9em;
+        }
+
+        .feature-box p {
+            color: #F5F5F5;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background-color:#fc6b03;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            border: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color:#eafa0f;
+            color: black;
+            transform: translateY(-2px);
+            cursor: pointer;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #fc6b03;
+            color: black;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+
+        .feature-box .icon {
+            font-size: 4.5em;
+        }
+
+        @media (max-width: 768px) {
+            .features {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .feature-box {
+                width: 90%;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo" style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+            <img src="{% static 'images/logo1.png' %}" alt="LettuceCare Logo" style="height: 100px; width: auto;">
+            <h1>LettuceCare</h1>
+        </div>
+    </header>
+
+    <main>
+        <!-- Falling Leaves on Left Side -->
+        <div class="falling-leaf left" style="animation-delay: 0s;">🍃</div>
+        <div class="falling-leaf left" style="animation-delay: -1s;">🍃</div>
+        <div class="falling-leaf left far-left" style="animation-delay: -3s;">🍃</div>
+        <div class="falling-leaf left middle-left" style="animation-delay: -5s;">🍃</div>
+        <div class="falling-leaf left" style="animation-delay: -7s;">🍃</div>
+        <div class="falling-leaf left far-left" style="animation-delay: -9s;">🍃</div>
+
+        <!-- Falling Leaves on Right Side -->
+        <div class="falling-leaf right" style="animation-delay: -1s;">🍃</div>
+        <div class="falling-leaf right" style="animation-delay: -2s;">🍃</div>
+        <div class="falling-leaf right far-right" style="animation-delay: -4s;">🍃</div>
+        <div class="falling-leaf right middle-right" style="animation-delay: -6s;">🍃</div>
+        <div class="falling-leaf right" style="animation-delay: -8s;">🍃</div>
+        <div class="falling-leaf right far-right" style="animation-delay: -10s;">🍃</div>
+
+        <section class="intro">
+            <img src="{% static 'images/hi.gif' %}" />
+            <div>
+                <h2>Welcome to LettuceCare!</h2>
+                <p>We help you predict diseases in your Lettuce plants, view historical data, or even upload images for real-time diagnosis, and can you also generate reports of historical data.</p>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="feature-box">
+                <div class="icon"><i class="fas fa-leaf"></i></div>
+                <h3>Predict Disease</h3>
+                <p>Upload an image of a plant to predict its health and possible diseases.</p>
+                <a href="{% url 'predict' %}" class="btn">Predict Now</a>
+            </div>
+            <div class="feature-box">
+                <div class="icon"><i class="fas fa-history"></i></div>
+                <h3>View History</h3>
+                <p>Access the history of past predictions and their results.</p>
+                <a href="{% url 'history' %}" class="btn">View History</a>
+            </div>
+            <div class="feature-box">
+                <div class="icon"><i class="fas fa-camera"></i></div>
+                <h3>Camera Prediction</h3>
+                <p>Use your camera to scan plants and detect diseases in real-time.</p>
+                <a href="{% url 'camera_predict' %}" class="btn">Capture Now</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p> 📌 2024 LettuceCare System  📌</p>
+    </footer>
+</body>
+</html>

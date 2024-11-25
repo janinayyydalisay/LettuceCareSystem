@@ -1,0 +1,244 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera : LettuceCare System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            height: 100%; 
+            font-family: 'Lucida Fax';
+            margin: 0;
+            padding: 0;
+            background: url("{% static 'images/lettuceBG.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+            overflow: hidden; 
+        }
+        .navbar {
+            display: flex;
+            justify-content: center;
+            background-color: #fa8507;
+            padding: 10px 0;
+            width: 100%;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            margin: 0 15px;
+            border-radius: 5px;
+            font-size: 1.1em;
+        }
+        .navbar a:hover {
+            background-color: #07fa0f;
+            color: black;
+        }
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 95%; 
+            flex-direction: column;
+        }
+        .intro {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: left;
+            background-color: #faee07;
+            padding: 10px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: fit-content;
+            margin: 10px auto;
+            animation: fadeInUp 1.5s ease forwards;
+        }
+        .intro::before {
+            content: "📌";
+            font-size: 2em;
+            margin-right: 10px;
+        }
+        .intro h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #0c5905;
+        }
+        .intro p {
+            font-size: 1.2em;
+            color: #010a00;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 2s ease forwards;
+        }
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 70%;
+            gap: 30px;
+        }
+        .camera-box, .prediction-box {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 45%; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .camera-box h2, .prediction-box h2 {
+            color: #0c5905;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        video {
+            width: 80%;
+            height: auto;
+            border: 5px solid #0c5905;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .capture-button {
+            padding: 12px 25px;
+            background-color: #0c5905;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 18px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .capture-button:hover {
+            background-color: #07fa0f;
+            transform: translateY(-2px);
+            color: black;
+        }
+        .result {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 25px;
+            margin-top: 10px;
+            width: 90%;
+        }
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: 100%;
+            }
+            .camera-box, .prediction-box {
+                width: 80%; /* Adjust width for smaller screens */
+                margin-bottom: 20px;
+            }
+        }
+        @media (max-width: 480px) {
+            .navbar a {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+            .capture-button {
+                font-size: 16px;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'predict' %}">Predict using Upload</a>
+        <a href="{% url 'history' %}">View History</a>
+    </div>
+
+    <main>
+        <!-- Intro Section -->
+        <section class="intro">
+            <img src="{% static 'images/leaf.gif' %}" style="width: 150px;" />
+            <div>
+                <h2>Camera Prediction</h2>
+                <p>Capture an image of your lettuce using the camera to predict its health and detect possible diseases.</p>
+            </div>
+        </section>
+
+        <!-- Container for Camera Feed and Prediction Result -->
+        <div class="container">
+            <!-- Camera Feed Box -->
+            <div class="camera-box">
+                <h2>Camera Feed</h2>
+                <video id="video" autoplay></video>
+            </div>
+
+            <!-- Prediction Result Box -->
+            <div class="prediction-box">
+                <h2>Prediction Result</h2>
+                <div class="result">
+                    <p><strong>Class:</strong> {{ predicted_class }}</p>
+                    <p><strong>Confidence:</strong> {{ probability }}%</p>
+                    <p><strong>Recommendation:</strong> {{ recommendation }}</p>
+                </div>
+                <button class="capture-button" id="capture">Capture & Predict</button>
+                <form id="uploadForm" method="POST" enctype="multipart/form-data" style="display:none;">
+                    {% csrf_token %}
+                    <input type="file" id="camera_image" name="camera_image">
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const video = document.getElementById('video');
+        const captureButton = document.getElementById('capture');
+        const uploadForm = document.getElementById('uploadForm');
+        const cameraInput = document.getElementById('camera_image');
+
+        if (navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    video.srcObject = stream;
+                })
+                .catch(error => {
+                    console.error("Error accessing camera: ", error);
+                });
+        }
+
+        captureButton.addEventListener('click', () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            canvas.toBlob(blob => {
+                const file = new File([blob], 'camera_image.jpg', { type: 'image/jpeg' });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                cameraInput.files = dataTransfer.files;
+                
+                uploadForm.submit();
+            }, 'image/jpeg');
+        });
+    </script>
+
+</body>
+</html>

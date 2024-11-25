@@ -1,0 +1,149 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result</title>
+    <style>
+        body {
+            font-family: 'Lucida Fax', sans-serif;
+            background: url("{% static 'images/LettuceBG1.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+            color: #f8f9fa;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #ffeb3b;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        img {
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            margin: 20px 0;
+            max-width: 90%;
+            height: auto;
+        }
+
+        .info-box {
+            background: rgba(34, 34, 34, 0.85);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 500px;
+            text-align: left;
+        }
+
+        p {
+            font-size: 1.2em;
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        strong {
+            color: #ffeb3b;
+        }
+
+        .links-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        a {
+            display: inline-block;
+            padding: 12px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            min-width: 150px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        a:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            p {
+                font-size: 1em;
+            }
+
+            a {
+                font-size: 0.9em;
+                padding: 10px 15px;
+            }
+        }
+
+        img {
+            width: 350px;
+            height: 350px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            margin: 20px 0;
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            img {
+                max-width: 100%;
+            }
+
+            p {
+                font-size: 0.9em;
+            }
+
+            a {
+                font-size: 0.8em;
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Prediction Result</h1>
+
+    <img src="{{ image_url }}" alt="Uploaded Image">
+
+    <div class="info-box">
+        <p><strong>Predicted Type of Class:</strong> {{ predicted_class }}</p>
+        <p><strong>Probability:</strong> {{ probability }}</p>
+        <p><strong>Recommendation:</strong> {{ recommendation }}</p>
+    </div>
+
+    <div class="links-container">
+        <a href="{% url 'predict' %}">Predict Again</a>
+        <a href="{% url 'history' %}">View History</a>
+    </div>
+</body>
+</html>
